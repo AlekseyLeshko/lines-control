@@ -232,6 +232,19 @@ describe('lines control', () => {
         },
       ],
       [
+        'return the result taking into account all the checks',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 100,
+          }, {
+            type: CheckType.total,
+            maxNumber: 1,
+          }],
+          expected: false,
+        },
+      ],
+      [
         'take one file',
         {
           checks: [{

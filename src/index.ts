@@ -88,5 +88,5 @@ export const linesControl = (checks: Check[] = [], commits?: Commits) => {
     result: getResult(check, changes.filter(change => check.pattern ? minimatch(change.path, check.pattern) : true)),
   }));
 
-  return Boolean(checkResults.length) ? checkResults.some(item => item.result) : true;
+  return Boolean(checkResults.length) ? checkResults.every(item => item.result) : true;
 }
