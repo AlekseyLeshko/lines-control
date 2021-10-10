@@ -221,6 +221,17 @@ describe('lines control', () => {
         },
       ],
       [
+        'a file pattern is undefined',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 20,
+            pattern: undefined,
+          }],
+          expected: true,
+        },
+      ],
+      [
         'take one file',
         {
           checks: [{
