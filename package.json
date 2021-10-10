@@ -7,7 +7,7 @@
   "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "example": "yarn type-check && node example.js",
+    "example": "node example.js",
     "static-checks": "type-check",
     "tdd": "jest --watch",
     "test": "jest",
