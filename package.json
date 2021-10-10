@@ -8,7 +8,9 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "tdd": "jest --watch"
+    "tdd": "jest --watch",
+    "build": "npx tsc",
+    "example": "y build && node example.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
