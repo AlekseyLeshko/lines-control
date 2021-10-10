@@ -12,7 +12,6 @@ export enum CheckType {
 type Check = {
   type: CheckType,
   maxNumber: number,
-  // pattern: string,
 }
 
 type CheckResult = Check & {
@@ -24,18 +23,16 @@ const getTotalInsertions = (change: FileChange) => change.insertions;
 
 const getSum = (changes: FileChange[], adder: (arg0: CheckType) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
+const getAdder = (check: Check) => {
+  if (check.type === CheckType.totalInsertions) return getTotalInsertions;
+
+  return getTotal;
+}
+
 const getResult = (check: Check, changes: FileChange[]) => {
-  if (check.type === CheckType.total) {
-    const sum = getSum(changes, getTotal);
-    return sum <= check.maxNumber;
-  }
-
-  if (check.type === CheckType.totalInsertions) {
-    const sum = getSum(changes, getTotalInsertions);
-    return sum <= check.maxNumber;
-  }
-
-  return false;
+  const adder = getAdder(check);
+  const sum = getSum(changes, adder);
+  return sum <= check.maxNumber;
 }
 
 export const linesControl = (checks: Check[] = [], changes: FileChange[] = []) => {
