@@ -5,8 +5,9 @@ const checks = [{
   maxNumber: 0,
 }];
 
-if (linesControl(checks)) {
+if (linesControl(checks, { to: 'HEAD^1' })) {
   console.log('All right!');
 } else {
   console.log('This repo would like a smaller update');
+  process.exit(1);
 }
