@@ -7,8 +7,8 @@ type FileChange = {
 }
 
 type Commits = {
-  from: string;
-  to?: string;
+  from?: string;
+  to: string;
 }
 
 export enum CheckType {
@@ -53,9 +53,9 @@ const parseGitOutput = (gitOutput: string) =>
       path,
     }));
 
-const getCommitRange = (commits?: Commits = {}) => {
+const getCommitRange = (commits?: Commits) => {
   const defaultBranchName = 'main';
-  const { from, to = defaultBranchName } = commits;
+  const { from, to = defaultBranchName } = commits || {};
 
   if (from && to) {
     return [from, to].join('...');
