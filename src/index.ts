@@ -6,6 +6,11 @@ type FileChange = {
   path: string,
 }
 
+type Commits = {
+  from: string;
+  to?: string;
+}
+
 export enum CheckType {
   total,
   totalInsertions,
@@ -48,25 +53,33 @@ const parseGitOutput = (gitOutput: string) =>
       path,
     }));
 
-const getGitOutput = () => {
-  // TODO: and master
+const getCommitRange = (commits?: Commits = {}) => {
   const defaultBranchName = 'main';
+  const { from, to = defaultBranchName } = commits;
 
-  const branchName =  defaultBranchName;
-  const cmd = `git diff origin/${branchName} --numstat`;
+  if (from && to) {
+    return [from, to].join('...');
+  }
+
+  return to;
+}
+
+const getGitOutput = (commits?: Commits) => {
+  const commitRange = getCommitRange(commits);
+  const cmd = `git diff ${commitRange} --numstat`;
   const gitOutput = execSync(cmd).toString();
   return gitOutput;
 }
 
-const getChanges = () => {
-  const gitOutput = getGitOutput();
+const getChanges = (commits?: Commits) => {
+  const gitOutput = getGitOutput(commits);
   const changes = parseGitOutput(gitOutput);
 
   return changes;
 }
 
-export const linesControl = (checks: Check[] = []) => {
-  const changes = getChanges();
+export const linesControl = (checks: Check[] = [], commits?: Commits) => {
+  const changes = getChanges(commits);
 
   const checkResults = checks.map((check) => ({
     ...check,

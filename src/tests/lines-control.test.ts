@@ -129,13 +129,79 @@ describe('lines control', () => {
       },
     ],
   ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
-    const gitOutput = generateGitOutput(changes) as any;
+    const gitOutput = generateGitOutput(changes);
     childProcess.execSync.mockImplementation(() => gitOutput);
 
     const actual = linesControl(checks);
 
     expect(childProcess.execSync).toHaveBeenCalled();
     expect(actual).toBe(expected);
+  });
+
+  describe('diff from X to Y', () => {
+    beforeEach(() => {
+      childProcess.execSync.mockReset();
+    });
+
+    test.each([
+      [
+        'the main and the current branch',
+        {
+          expected: 'git diff main --numstat'
+        },
+      ],
+      [
+        'master and feature/test-branch-name',
+        {
+          commitRange: {
+            from: 'master',
+            to: 'feature/test-branch-name',
+          },
+          expected: 'git diff master...feature/test-branch-name --numstat'
+        },
+      ],
+      [
+        'the current branch and feature/another-test-branch-name',
+        {
+          commitRange: {
+            to: 'feature/another-test-branch-name',
+          },
+          expected: 'git diff feature/another-test-branch-name --numstat'
+        },
+      ],
+      [
+        'a commit and another commit',
+        {
+          commitRange: {
+            from: '68216e54cad82a9071f875363571bbe78f358ba',
+            to: '428aadc7463de53b9e7423a7d456daf79d4b992e',
+          },
+          expected: 'git diff 68216e54cad82a9071f875363571bbe78f358ba...428aadc7463de53b9e7423a7d456daf79d4b992e --numstat'
+        },
+      ],
+    ])('should compare with %s', (_, { commitRange, expected }) => {
+      const checks = [{
+        type: CheckType.total,
+        maxNumber: 10,
+      }];
+      const changes = [{
+        insertions: 10,
+        deletions: 0,
+        path: 'x',
+      }];
+      const gitOutput = generateGitOutput(changes);
+      const { execSync } = childProcess;
+      execSync.mockImplementation(() => gitOutput);
+
+      // Act
+      const actual = linesControl(checks, commitRange);
+
+      // Asserts
+      expect(execSync).toHaveBeenCalledTimes(1);
+      expect(execSync).toHaveBeenCalledWith(expected);
+
+      expect(actual).toBeTruthy();
+    });
   });
 });
 
