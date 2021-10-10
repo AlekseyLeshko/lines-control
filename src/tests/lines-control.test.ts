@@ -1,11 +1,11 @@
-import { linesControl } from '../index'
+import { linesControl, CheckType } from '../index'
 
 describe('lines control', () => {
   test.each([
     [
       'total check when no value is set',
       {
-        total: undefined,
+        checks: undefined,
         changes: undefined,
         expected: true,
       },
@@ -13,7 +13,10 @@ describe('lines control', () => {
     [
       'total check when the total is 0',
       {
-        total: 0,
+        checks: [{
+          type: CheckType.total,
+          maxNumber: 0,
+        }],
         changes: [],
         expected: true,
       },
@@ -21,7 +24,10 @@ describe('lines control', () => {
     [
       'total check when a file has changes less then the total',
       {
-        total: 10,
+        checks: [{
+          type: CheckType.total,
+          maxNumber: 10,
+        }],
         changes: [{
           added: 9,
           deleted: 0,
@@ -33,7 +39,10 @@ describe('lines control', () => {
     [
       'total check when the file has changes equal to the total number of',
       {
-        total: 10,
+        checks: [{
+          type: CheckType.total,
+          maxNumber: 10,
+        }],
         changes: [{
           added: 10,
           deleted: 0,
@@ -45,7 +54,10 @@ describe('lines control', () => {
     [
       'total check when a file has more changes than the total number of',
       {
-        total: 10,
+        checks: [{
+          type: CheckType.total,
+          maxNumber: 10,
+        }],
         changes: [{
           added: 11,
           deleted: 0,
@@ -57,7 +69,10 @@ describe('lines control', () => {
     [
       'total check when the file has changes equal to the total number of',
       {
-        total: 10,
+        checks: [{
+          type: CheckType.total,
+          maxNumber: 10,
+        }],
         changes: [{
           added: 1,
           deleted: 9,
@@ -66,7 +81,7 @@ describe('lines control', () => {
         expected: true,
       },
     ],
-  ])('should return a status for %s', (_, { total, changes, expected }) => {
-    expect(linesControl(total, changes)).toBe(expected);
+  ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
+    expect(linesControl(checks, changes)).toBe(expected);
   });
 });
