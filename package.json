@@ -11,7 +11,7 @@
     "static-checks": "type-check",
     "tdd": "jest --watch",
     "test": "jest",
-    "type-check": "tsc --noEmit"
+    "type-check": "yarn tsc --noEmit"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
