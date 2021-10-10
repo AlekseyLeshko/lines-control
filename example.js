@@ -2,7 +2,7 @@ const { linesControl, CheckType } = require('./dist/index')
 
 const checks = [{
   type: CheckType.total,
-  maxNumber: 0,
+  maxNumber: 30,
 }];
 
 if (linesControl(checks, { to: 'HEAD^1' })) {
