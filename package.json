@@ -10,7 +10,7 @@
     "test": "jest",
     "tdd": "jest --watch",
     "build": "npx tsc",
-    "example": "y build && node example.js"
+    "example": "yarn build && node example.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
