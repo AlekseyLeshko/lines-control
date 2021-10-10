@@ -6,6 +6,10 @@
   "repository": "git@github.com:AlekseyLeshko/lines-control.git",
   "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "tdd": "jest --watch"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
