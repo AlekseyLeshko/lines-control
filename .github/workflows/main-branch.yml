@@ -83,6 +83,42 @@ jobs:
       - name: Checks
         run: yarn static-checks
 
+  tests:
+    name: Unit tests
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Load current commit
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Read nvmrc
+        id: read-nvmrc
+        run: echo "::set-output name=version::$(cat .nvmrc)"
+        shell: bash
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ steps.read-nvmrc.outputs.version }}
+
+      - name: Restore cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile --no-progress
+
+      - name: Run unit tests
+        run: yarn test
+
   diff-limit:
     name: Diff limit
     needs: setup
