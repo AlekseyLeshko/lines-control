@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:AlekseyLeshko/lines-control.git",
   "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
 }
