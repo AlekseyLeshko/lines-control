@@ -1,10 +1,10 @@
 jest.mock('child_process')
-import * as childProcess from 'child_process';
+import { execSync } from 'child_process';
 import { linesControl, CheckType } from '../index'
 
 describe('lines control', () => {
   beforeEach(() => {
-    childProcess.execSync.mockReset();
+    execSync.mockReset();
   });
 
   describe('checks', () => {
@@ -135,7 +135,6 @@ describe('lines control', () => {
       ],
     ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
       const gitOutput = generateGitOutput(changes);
-      const { execSync } = childProcess;
       execSync.mockImplementation(() => gitOutput);
 
       // Atc
@@ -196,7 +195,6 @@ describe('lines control', () => {
         path: 'x',
       }];
       const gitOutput = generateGitOutput(changes);
-      const { execSync } = childProcess;
       execSync.mockImplementation(() => gitOutput);
 
       // Act
