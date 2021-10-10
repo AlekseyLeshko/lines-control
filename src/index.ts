@@ -1,6 +1,6 @@
 type FileChange = {
-  added: number,
-  deleted: number,
+  insertions: number,
+  deletions: number,
   path: string,
 }
 
@@ -18,7 +18,7 @@ type CheckResult = Check & {
   result: boolean,
 }
 
-const getTotal = (change: FileChange) => change.added + change.deleted;
+const getTotal = (change: FileChange) => change.insertions + change.deletions;
 
 const getSum = (changes: FileChange[]) => changes.reduce((acc, change) => acc += getTotal(change), 0)
 

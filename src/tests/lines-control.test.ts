@@ -29,8 +29,8 @@ describe('lines control', () => {
           maxNumber: 10,
         }],
         changes: [{
-          added: 9,
-          deleted: 0,
+          insertions: 9,
+          deletions: 0,
           path: 'x',
         }],
         expected: true,
@@ -44,8 +44,8 @@ describe('lines control', () => {
           maxNumber: 10,
         }],
         changes: [{
-          added: 10,
-          deleted: 0,
+          insertions: 10,
+          deletions: 0,
           path: 'x',
         }],
         expected: true,
@@ -59,8 +59,8 @@ describe('lines control', () => {
           maxNumber: 10,
         }],
         changes: [{
-          added: 11,
-          deleted: 0,
+          insertions: 11,
+          deletions: 0,
           path: 'x',
         }],
         expected: false,
@@ -74,8 +74,8 @@ describe('lines control', () => {
           maxNumber: 10,
         }],
         changes: [{
-          added: 1,
-          deleted: 9,
+          insertions: 1,
+          deletions: 9,
           path: 'x',
         }],
         expected: true,
