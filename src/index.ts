@@ -6,6 +6,7 @@ type FileChange = {
 
 export enum CheckType {
   total,
+  totalInsertions,
 }
 
 type Check = {
@@ -19,12 +20,18 @@ type CheckResult = Check & {
 }
 
 const getTotal = (change: FileChange) => change.insertions + change.deletions;
+const getTotalInsertions = (change: FileChange) => change.insertions;
 
-const getSum = (changes: FileChange[]) => changes.reduce((acc, change) => acc += getTotal(change), 0)
+const getSum = (changes: FileChange[], adder: (arg0: CheckType) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
 const getResult = (check: Check, changes: FileChange[]) => {
   if (check.type === CheckType.total) {
-    const sum = getSum(changes);
+    const sum = getSum(changes, getTotal);
+    return sum <= check.maxNumber;
+  }
+
+  if (check.type === CheckType.totalInsertions) {
+    const sum = getSum(changes, getTotalInsertions);
     return sum <= check.maxNumber;
   }
 

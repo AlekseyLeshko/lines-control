@@ -81,6 +81,51 @@ describe('lines control', () => {
         expected: true,
       },
     ],
+    [
+      'total check when the file has insertion changes less to the total number of',
+      {
+        checks: [{
+          type: CheckType.totalInsertions,
+          maxNumber: 10,
+        }],
+        changes: [{
+          insertions: 1,
+          deletions: 11,
+          path: 'x',
+        }],
+        expected: true,
+      },
+    ],
+    [
+      'total check when the file has insertion changes equal to the total number of',
+      {
+        checks: [{
+          type: CheckType.totalInsertions,
+          maxNumber: 10,
+        }],
+        changes: [{
+          insertions: 10,
+          deletions: 11,
+          path: 'x',
+        }],
+        expected: true,
+      },
+    ],
+    [
+      'total check when the file has insertion changes more to the total number of',
+      {
+        checks: [{
+          type: CheckType.totalInsertions,
+          maxNumber: 10,
+        }],
+        changes: [{
+          insertions: 11,
+          deletions: 11,
+          path: 'x',
+        }],
+        expected: false,
+      },
+    ],
   ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
     expect(linesControl(checks, changes)).toBe(expected);
   });
