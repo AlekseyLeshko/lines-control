@@ -3,6 +3,7 @@ const { linesControl, CheckType } = require('./dist/index')
 const checks = [{
   type: CheckType.total,
   maxNumber: 30,
+  pattern: '!**/tests/*'
 }];
 
 if (linesControl(checks, { to: 'HEAD^1' })) {

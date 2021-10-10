@@ -207,6 +207,89 @@ describe('lines control', () => {
       expect(actual).toBeTruthy();
     });
   });
+
+  describe('with a file pattern', () => {
+    test.each([
+      [
+        'without a file pattern',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 20,
+          }],
+          expected: true,
+        },
+      ],
+      [
+        'take one file',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 3,
+            pattern: 'aaa/bbb/y'
+          }],
+          expected: true,
+        },
+      ],
+      [
+        'take all files in a direcotry',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 10,
+            pattern: 'aaa/bbb/*'
+          }],
+          expected: true,
+        },
+      ],
+      [
+        'take all files in a direcotry with the total insertions type',
+        {
+          checks: [{
+            type: CheckType.totalInsertions,
+            maxNumber: 9,
+            pattern: 'aaa/bbb/*'
+          }],
+          expected: true,
+        },
+      ],
+      [
+        'take all files without one file',
+        {
+          checks: [{
+            type: CheckType.total,
+            maxNumber: 10,
+            pattern: '!aaa/z'
+          }],
+          expected: true,
+        },
+      ],
+    ])('should %s', (_, { checks, expected }) => {
+      const changes = [{
+        insertions: 7,
+        deletions: 0,
+        path: 'aaa/bbb/x',
+      }, {
+        insertions: 2,
+        deletions: 1,
+        path: 'aaa/bbb/y',
+      }, {
+        insertions: 5,
+        deletions: 4,
+        path: 'aaa/z',
+      }];
+      const gitOutput = generateGitOutput(changes);
+      execSync.mockImplementation(() => gitOutput);
+
+      // Act
+      const actual = linesControl(checks);
+
+      // Asserts
+      expect(execSync).toHaveBeenCalledTimes(1);
+
+      expect(actual).toBe(expected);
+    });
+  });
 });
 
 const generateGitOutput = (changes = []) =>

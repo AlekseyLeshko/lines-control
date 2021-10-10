@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import minimatch from 'minimatch';
 
 type FileChange = {
   insertions: number,
@@ -19,6 +20,7 @@ export enum CheckType {
 type Check = {
   type: CheckType,
   maxNumber: number,
+  pattern?: string,
 }
 
 type CheckResult = Check & {
@@ -83,7 +85,7 @@ export const linesControl = (checks: Check[] = [], commits?: Commits) => {
 
   const checkResults = checks.map((check) => ({
     ...check,
-    result: getResult(check, changes),
+    result: getResult(check, changes.filter(change => check.pattern ? minimatch(change.path, check.pattern) : true)),
   }));
 
   return Boolean(checkResults.length) ? checkResults.some(item => item.result) : true;
