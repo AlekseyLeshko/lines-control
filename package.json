@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "example": "node example.js",
-    "static-checks": "type-check",
+    "static-checks": "yarn type-check",
     "tdd": "jest --watch",
     "test": "jest",
     "type-check": "yarn tsc --noEmit"
