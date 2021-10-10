@@ -7,10 +7,11 @@
   "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "example": "yarn type-check && node example.js",
+    "static-checks": "type-check",
     "tdd": "jest --watch",
-    "build": "npx tsc",
-    "example": "yarn build && node example.js"
+    "test": "jest",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
