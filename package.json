@@ -1,0 +1,9 @@
+{
+  "name": "lines-control",
+  "version": "0.0.1",
+  "description": "This tool should you control the scope of diff changes",
+  "main": "index.js",
+  "repository": "git@github.com:AlekseyLeshko/lines-control.git",
+  "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
+  "license": "MIT"
+}
