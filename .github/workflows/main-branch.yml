@@ -12,6 +12,7 @@ on:
 jobs:
   setup:
     name: Set up
+    runs-on: [Linux]
 
     steps:
       - name: Cancel previous workflow runs
@@ -49,6 +50,7 @@ jobs:
   static-checks:
     name: Statis checks
     needs: setup
+    runs-on: [Linux]
 
     steps:
       - name: Load current commit
