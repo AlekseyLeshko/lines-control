@@ -1,3 +1,5 @@
+jest.mock('child_process')
+import * as childProcess from 'child_process';
 import { linesControl, CheckType } from '../index'
 
 describe('lines control', () => {
@@ -127,6 +129,15 @@ describe('lines control', () => {
       },
     ],
   ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
-    expect(linesControl(checks, changes)).toBe(expected);
+    const gitOutput = generateGitOutput(changes) as any;
+    childProcess.execSync.mockImplementation(() => gitOutput);
+
+    const actual = linesControl(checks);
+
+    expect(childProcess.execSync).toHaveBeenCalled();
+    expect(actual).toBe(expected);
   });
 });
+
+const generateGitOutput = (changes = []) =>
+  changes.map(change => `${change.insertions}\t${change.deletions}\t${change.path}`).join('\n');

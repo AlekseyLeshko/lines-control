@@ -1,3 +1,5 @@
+import { execSync } from 'child_process';
+
 type FileChange = {
   insertions: number,
   deletions: number,
@@ -21,7 +23,7 @@ type CheckResult = Check & {
 const getTotal = (change: FileChange) => change.insertions + change.deletions;
 const getTotalInsertions = (change: FileChange) => change.insertions;
 
-const getSum = (changes: FileChange[], adder: (arg0: CheckType) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
+const getSum = (changes: FileChange[], adder: (arg0: FileChange) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
 const getAdder = (check: Check) => {
   if (check.type === CheckType.totalInsertions) return getTotalInsertions;
@@ -35,11 +37,41 @@ const getResult = (check: Check, changes: FileChange[]) => {
   return sum <= check.maxNumber;
 }
 
-export const linesControl = (checks: Check[] = [], changes: FileChange[] = []) => {
-  const arr = checks.map((check) => ({
+const parseGitOutput = (gitOutput: string) =>
+  gitOutput
+    .split('\n')
+    .filter(line => line)
+    .map((diffChage) => diffChage.split('\t'))
+    .map(([a, b, path]) => ({
+      insertions: parseInt(a, 10),
+      deletions: parseInt(b, 10),
+      path,
+    }));
+
+const getGitOutput = () => {
+  // TODO: and master
+  const defaultBranchName = 'main';
+
+  const branchName =  defaultBranchName;
+  const cmd = `git diff origin/${branchName} --numstat`;
+  const gitOutput = execSync(cmd).toString();
+  return gitOutput;
+}
+
+const getChanges = () => {
+  const gitOutput = getGitOutput();
+  const changes = parseGitOutput(gitOutput);
+
+  return changes;
+}
+
+export const linesControl = (checks: Check[] = []) => {
+  const changes = getChanges();
+
+  const checkResults = checks.map((check) => ({
     ...check,
     result: getResult(check, changes),
   }));
 
-  return Boolean(arr.length) ? arr.some(item => item.result) : true;
+  return Boolean(checkResults.length) ? checkResults.some(item => item.result) : true;
 }
