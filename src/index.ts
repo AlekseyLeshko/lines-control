@@ -12,13 +12,13 @@ type Compare = {
   to: string;
 }
 
-export enum CheckType {
+export enum RuleType {
   total,
   totalInsertions,
 }
 
 export type Check = {
-  type: CheckType,
+  type: RuleType,
   maxNumber: number,
   pattern?: string,
 }
@@ -32,16 +32,16 @@ const getTotalInsertions = (change: FileChange) => change.insertions;
 
 const getSum = (changes: FileChange[], adder: (arg0: FileChange) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
-const getAdder = (check: Check) => {
-  if (check.type === CheckType.totalInsertions) return getTotalInsertions;
+const getAdder = (rule: Check) => {
+  if (rule.type === RuleType.totalInsertions) return getTotalInsertions;
 
   return getTotal;
 }
 
-const getResult = (check: Check, changes: FileChange[]) => {
-  const adder = getAdder(check);
+const getResult = (rule: Check, changes: FileChange[]) => {
+  const adder = getAdder(rule);
   const sum = getSum(changes, adder);
-  return sum <= check.maxNumber;
+  return sum <= rule.maxNumber;
 }
 
 const parseGitOutput = (gitOutput: string) =>
@@ -79,13 +79,13 @@ const getChanges = (comparisons?: Compare) => {
   return changes;
 }
 
-export const linesControl = (checks: Check[] = [], comparisons?: Compare) => {
+export const linesControl = (rules: Check[] = [], comparisons?: Compare) => {
   const changes = getChanges(comparisons);
 
-  const checkResults = checks.map((check) => ({
-    ...check,
-    result: getResult(check, changes.filter(change => check.pattern ? minimatch(change.path, check.pattern) : true)),
+  const ruleResults = rules.map(rule => ({
+    ...rule,
+    result: getResult(rule, changes.filter(change => rule.pattern ? minimatch(change.path, rule.pattern) : true)),
   }));
 
-  return Boolean(checkResults.length) ? checkResults.every(item => item.result) : true;
+  return Boolean(ruleResults.length) ? ruleResults.every(item => item.result) : true;
 }

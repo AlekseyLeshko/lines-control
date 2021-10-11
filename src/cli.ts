@@ -2,23 +2,23 @@
 
 const { version } = require('../package.json');
 import commander, { Command } from 'commander';
-import { linesControl, CheckType, Check } from './index';
+import { linesControl, RuleType, Check } from './index';
 
 const program = new Command();
 
 const humanableCheckType = {
-  [CheckType[CheckType.total]]: CheckType[CheckType.total],
-  [CheckType[CheckType.totalInsertions]]: CheckType[CheckType.totalInsertions],
+  [RuleType[RuleType.total]]: RuleType[RuleType.total],
+  [RuleType[RuleType.totalInsertions]]: RuleType[RuleType.totalInsertions],
 };
 
 const rulesDescription = `Rules for checking.\nTypes: ${Object.keys(humanableCheckType).join(', ')};\nexample: total;50;src/**/*`;
 
 const convertArgToRule = (stringArg: string) => {
   const attrs = stringArg.split(',');
-  const checkTypeStr = (attrs[0] as unknown as CheckType);
+  const checkTypeStr = (attrs[0] as unknown as RuleType);
 
   return {
-    type: (checkTypeStr || CheckType.totalInsertions),
+    type: (checkTypeStr || RuleType.totalInsertions),
     maxNumber: parseInt(attrs[1] || '0', 10),
     pattern: attrs[2],
   };

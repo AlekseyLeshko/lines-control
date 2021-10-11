@@ -1,18 +1,18 @@
 jest.mock('child_process')
 import { execSync } from 'child_process';
-import { linesControl, CheckType } from '../index'
+import { linesControl, RuleType } from '../index'
 
 describe('lines control', () => {
   beforeEach(() => {
     execSync.mockReset();
   });
 
-  describe('checks', () => {
+  describe('rules', () => {
     test.each([
       [
         'total check when no value is set',
         {
-          checks: undefined,
+          rules: undefined,
           changes: undefined,
           expected: true,
         },
@@ -20,8 +20,8 @@ describe('lines control', () => {
       [
         'total check when the total is 0',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 0,
           }],
           changes: [],
@@ -31,8 +31,8 @@ describe('lines control', () => {
       [
         'total check when a file has changes less then the total',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
           }],
           changes: [{
@@ -46,8 +46,8 @@ describe('lines control', () => {
       [
         'total check when the file has changes equal to the total number of',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
           }],
           changes: [{
@@ -61,8 +61,8 @@ describe('lines control', () => {
       [
         'total check when a file has more changes than the total number of',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
           }],
           changes: [{
@@ -76,8 +76,8 @@ describe('lines control', () => {
       [
         'total check when the file has changes equal to the total number of',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
           }],
           changes: [{
@@ -91,8 +91,8 @@ describe('lines control', () => {
       [
         'total check when the file has insertion changes less to the total number of',
         {
-          checks: [{
-            type: CheckType.totalInsertions,
+          rules: [{
+            type: RuleType.totalInsertions,
             maxNumber: 10,
           }],
           changes: [{
@@ -106,8 +106,8 @@ describe('lines control', () => {
       [
         'total check when the file has insertion changes equal to the total number of',
         {
-          checks: [{
-            type: CheckType.totalInsertions,
+          rules: [{
+            type: RuleType.totalInsertions,
             maxNumber: 10,
           }],
           changes: [{
@@ -121,8 +121,8 @@ describe('lines control', () => {
       [
         'total check when the file has insertion changes more to the total number of',
         {
-          checks: [{
-            type: CheckType.totalInsertions,
+          rules: [{
+            type: RuleType.totalInsertions,
             maxNumber: 10,
           }],
           changes: [{
@@ -133,12 +133,12 @@ describe('lines control', () => {
           expected: false,
         },
       ],
-    ])('should return a status for %s', (_, { checks, total, changes, expected }) => {
+    ])('should return a status for %s', (_, { rules, total, changes, expected }) => {
       const gitOutput = generateGitOutput(changes);
       execSync.mockImplementation(() => gitOutput);
 
       // Atc
-      const actual = linesControl(checks);
+      const actual = linesControl(rules);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);
@@ -185,8 +185,8 @@ describe('lines control', () => {
         },
       ],
     ])('should compare with %s', (_, { commitRange, expected }) => {
-      const checks = [{
-        type: CheckType.total,
+      const rules = [{
+        type: RuleType.total,
         maxNumber: 10,
       }];
       const changes = [{
@@ -198,7 +198,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Act
-      const actual = linesControl(checks, commitRange);
+      const actual = linesControl(rules, commitRange);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);
@@ -213,8 +213,8 @@ describe('lines control', () => {
       [
         'without a file pattern',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 20,
           }],
           expected: true,
@@ -223,8 +223,8 @@ describe('lines control', () => {
       [
         'a file pattern is undefined',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 20,
             pattern: undefined,
           }],
@@ -232,13 +232,13 @@ describe('lines control', () => {
         },
       ],
       [
-        'return the result taking into account all the checks',
+        'return the result taking into account all the rules',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 100,
           }, {
-            type: CheckType.total,
+            type: RuleType.total,
             maxNumber: 1,
           }],
           expected: false,
@@ -247,8 +247,8 @@ describe('lines control', () => {
       [
         'take one file',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 3,
             pattern: 'aaa/bbb/y'
           }],
@@ -258,8 +258,8 @@ describe('lines control', () => {
       [
         'take all files in a direcotry',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
             pattern: 'aaa/bbb/*'
           }],
@@ -269,8 +269,8 @@ describe('lines control', () => {
       [
         'take all files in a direcotry with the total insertions type',
         {
-          checks: [{
-            type: CheckType.totalInsertions,
+          rules: [{
+            type: RuleType.totalInsertions,
             maxNumber: 9,
             pattern: 'aaa/bbb/*'
           }],
@@ -280,15 +280,15 @@ describe('lines control', () => {
       [
         'take all files without one file',
         {
-          checks: [{
-            type: CheckType.total,
+          rules: [{
+            type: RuleType.total,
             maxNumber: 10,
             pattern: '!aaa/z'
           }],
           expected: true,
         },
       ],
-    ])('should %s', (_, { checks, expected }) => {
+    ])('should %s', (_, { rules, expected }) => {
       const changes = [{
         insertions: 7,
         deletions: 0,
@@ -306,7 +306,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Act
-      const actual = linesControl(checks);
+      const actual = linesControl(rules);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);

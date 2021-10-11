@@ -1,7 +1,7 @@
-const { linesControl, CheckType } = require('./dist/index')
+const { linesControl, RuleType } = require('./dist/index')
 
 const checks = [{
-  type: CheckType.total,
+  type: RuleType.total,
   maxNumber: 30,
   pattern: '!**/tests/*'
 }];
