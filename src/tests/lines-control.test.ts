@@ -150,19 +150,19 @@ describe('lines control', () => {
   describe('diff from X to Y', () => {
     test.each([
       [
-        'the main and the current branch',
+        'the default branch:master and the current branch',
         {
-          expected: 'git diff main --numstat'
+          expected: 'git diff master --numstat'
         },
       ],
       [
-        'master and feature/test-branch-name',
+        'main and feature/test-branch-name',
         {
           commitRange: {
-            from: 'master',
+            from: 'main',
             to: 'feature/test-branch-name',
           },
-          expected: 'git diff master...feature/test-branch-name --numstat'
+          expected: 'git diff main...feature/test-branch-name --numstat'
         },
       ],
       [

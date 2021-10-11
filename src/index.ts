@@ -56,7 +56,7 @@ const parseGitOutput = (gitOutput: string) =>
     }));
 
 const getCommitRange = (comparisons?: Compare) => {
-  const defaultBranchName = 'main';
+  const defaultBranchName = 'master';
   const { from, to = defaultBranchName } = comparisons || {};
   if (from && to) {
     return [from, to].join('...');
