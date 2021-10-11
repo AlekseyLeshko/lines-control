@@ -52,8 +52,6 @@ program
 
 program.parse(process.argv);
 
-const options = program.opts();
-
 const convertComparisonsFromArrToObj = (arr: string[]) => {
   if (arr.length === 2) {
     return {
@@ -67,6 +65,7 @@ const convertComparisonsFromArrToObj = (arr: string[]) => {
   };
 }
 
+const options = program.opts();
 const comparisons = convertComparisonsFromArrToObj(options.comparisons);
 const result = isLinesControlPass(options.rules, comparisons);
 
