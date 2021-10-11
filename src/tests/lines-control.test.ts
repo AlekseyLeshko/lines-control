@@ -158,7 +158,7 @@ describe('lines control', () => {
       [
         'main and feature/test-branch-name',
         {
-          commitRange: {
+          comparisons: {
             from: 'main',
             to: 'feature/test-branch-name',
           },
@@ -168,7 +168,7 @@ describe('lines control', () => {
       [
         'the current branch and feature/another-test-branch-name',
         {
-          commitRange: {
+          comparisons: {
             to: 'feature/another-test-branch-name',
           },
           expected: 'git diff feature/another-test-branch-name --numstat'
@@ -177,14 +177,14 @@ describe('lines control', () => {
       [
         'a commit and another commit',
         {
-          commitRange: {
+          comparisons: {
             from: '68216e54cad82a9071f875363571bbe78f358ba',
             to: '428aadc7463de53b9e7423a7d456daf79d4b992e',
           },
           expected: 'git diff 68216e54cad82a9071f875363571bbe78f358ba...428aadc7463de53b9e7423a7d456daf79d4b992e --numstat'
         },
       ],
-    ])('should compare with %s', (_, { commitRange, expected }) => {
+    ])('should compare with %s', (_, { comparisons, expected }) => {
       const rules = [{
         type: RuleType.total,
         maxNumber: 10,
@@ -198,7 +198,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Act
-      const actual = linesControl(rules, commitRange);
+      const actual = linesControl(rules, comparisons);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);
