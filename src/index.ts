@@ -1,11 +1,15 @@
 import { execSync } from 'child_process';
 import minimatch from 'minimatch';
 
-type FileChange = {
-  insertions: number,
-  deletions: number,
-  path: string,
+export const isLinesControlPass = (rules: Rule[] = [], comparisons?: Compare) => {
+  const changes = getChanges(comparisons);
+
+  return rules
+    .map(rule => ({ ...rule, result: getResult(rule, changes) }))
+    .every(item => item.result);
 }
+
+export default isLinesControlPass;
 
 type Compare = {
   from?: string;
@@ -23,8 +27,10 @@ export type Rule = {
   pattern?: string,
 }
 
-type CheckResult = Rule & {
-  result: boolean,
+type FileChange = {
+  insertions: number,
+  deletions: number,
+  path: string,
 }
 
 const getTotal = (change: FileChange) => change.insertions + change.deletions;
@@ -80,14 +86,3 @@ const getChanges = (comparisons?: Compare) => {
 
   return changes;
 }
-
-export const isLinesControlPass = (rules: Rule[] = [], comparisons?: Compare) => {
-  const changes = getChanges(comparisons);
-  const result = rules
-    .map(rule => ({ ...rule, result: getResult(rule, changes) }))
-    .every(item => item.result);
-
-  return result
-}
-
-export default isLinesControlPass;
