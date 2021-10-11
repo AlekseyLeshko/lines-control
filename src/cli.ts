@@ -2,29 +2,9 @@
 
 const { version } = require('../package.json');
 import commander, { Command } from 'commander';
-import { linesControl, CheckType } from './index';
+import { linesControl, CheckType, Check } from './index';
 
 const program = new Command();
-
-const convertStrToCheckType = (string: string) => {
-  const checkTypeStr = CheckType[string as any];
-  return CheckType[checkTypeStr as any];
-}
-
-const convertArgToRule = (stringArg: string) => {
-  const attrs = stringArg.split(',');
-
-  return {
-    type: convertStrToCheckType(attrs[0]) || CheckType[0],
-    maxNumber: attrs[1] || 0,
-    pattern: attrs[2],
-  };
-};
-
-const commaSeparatedList = (value: string, previous: any) => {
-  const rule = convertArgToRule(value);
-  return previous.concat([rule])
-}
 
 const humanableCheckType = {
   [CheckType[CheckType.total]]: CheckType[CheckType.total],
@@ -33,36 +13,64 @@ const humanableCheckType = {
 
 const rulesDescription = `Rules for checking.\nTypes: ${Object.keys(humanableCheckType).join(', ')};\nexample: total;50;src/**/*`;
 
+const convertArgToRule = (stringArg: string) => {
+  const attrs = stringArg.split(',');
+  const checkTypeStr = (attrs[0] as unknown as CheckType);
+
+  return {
+    type: (checkTypeStr || CheckType.totalInsertions),
+    maxNumber: parseInt(attrs[1] || '0', 10),
+    pattern: attrs[2],
+  };
+};
+
+const addRule = (value: string, previous: Check[]) => {
+  const rule = convertArgToRule(value);
+  return previous.concat([rule])
+}
+
+const addComparisons = (value: string) => {
+  const arr = value.split(',');
+
+  if (arr.length > 2) {
+    throw new commander.InvalidArgumentError('Two comparators at most.');
+  }
+
+  return arr;
+}
+
 program
-  .option('-r, --rules <value...>', rulesDescription, commaSeparatedList, [])
-
-  //.option('-d, --debug', 'output extra debugging')
-  //.option('-s, --silent', 'Do not throw an error')
-  //.option('-v, --verbose', 'Do not throw an error')
-
-  .option('-w, --with', 'Compare to a commit or branch', 'master')
-
-  .option('--from', 'Compare from, a commit or branch', 'master')
-  .option('--to', 'Compare to, a commit or branch', 'master')
+  .option('-r, --rules <value...>', rulesDescription, addRule, [])
+  .option('-c, --comparisons <value>', 'Comparison of commits and branches', addComparisons)
   .version(version, '-v, --vers', 'output the current version')
   .showSuggestionAfterError()
   program.addHelpText('after', `
   Example call:
-    $ lines-control --rules total,25 totalInsertions,5,src/**/* -w`);
+    $ lines-control --rules total,25 totalInsertions,5,src/**/* -w
+    $ lines-control --rules total,25 --comparisons master,feature/test-branch-name
+    $ lines-control --rules total,25 --comparisons main
+  `);
 
 program.parse(process.argv);
 
 const options = program.opts();
 
-if (options.to || options.from) {
-  if (!(options.to && options.from)) {
-    console.error('"to" and "from" should use together');
-    process.exit(1);
+const convertComparisonsFromArrToObj = (arr: string[]) => {
+  if (arr.length === 2) {
+    return {
+      from: arr[0],
+      to: arr[1],
+    };
   }
+
+  return {
+    to: arr[0],
+  };
 }
 
-const result = linesControl(options.rules, { to: options.with || options.to, from: options.from });
-//console.log(result);
+const comparisons = convertComparisonsFromArrToObj(options.comparisons);
+const result = linesControl(options.rules, comparisons);
+
 if (result) {
   console.log('All right!');
 } else {

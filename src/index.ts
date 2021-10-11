@@ -17,7 +17,7 @@ export enum CheckType {
   totalInsertions,
 }
 
-type Check = {
+export type Check = {
   type: CheckType,
   maxNumber: number,
   pattern?: string,
