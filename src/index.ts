@@ -7,7 +7,7 @@ type FileChange = {
   path: string,
 }
 
-type Commits = {
+type Compare = {
   from?: string;
   to: string;
 }
@@ -55,10 +55,9 @@ const parseGitOutput = (gitOutput: string) =>
       path,
     }));
 
-const getCommitRange = (commits?: Commits) => {
+const getCommitRange = (comparisons?: Compare) => {
   const defaultBranchName = 'main';
-  const { from, to = defaultBranchName } = commits || {};
-
+  const { from, to = defaultBranchName } = comparisons || {};
   if (from && to) {
     return [from, to].join('...');
   }
@@ -66,22 +65,22 @@ const getCommitRange = (commits?: Commits) => {
   return to;
 }
 
-const getGitOutput = (commits?: Commits) => {
-  const commitRange = getCommitRange(commits);
+const getGitOutput = (comparisons?: Compare) => {
+  const commitRange = getCommitRange(comparisons);
   const cmd = `git diff ${commitRange} --numstat`;
   const gitOutput = execSync(cmd).toString();
   return gitOutput;
 }
 
-const getChanges = (commits?: Commits) => {
-  const gitOutput = getGitOutput(commits);
+const getChanges = (comparisons?: Compare) => {
+  const gitOutput = getGitOutput(comparisons);
   const changes = parseGitOutput(gitOutput);
 
   return changes;
 }
 
-export const linesControl = (checks: Check[] = [], commits?: Commits) => {
-  const changes = getChanges(commits);
+export const linesControl = (checks: Check[] = [], comparisons?: Compare) => {
+  const changes = getChanges(comparisons);
 
   const checkResults = checks.map((check) => ({
     ...check,
