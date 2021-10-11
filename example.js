@@ -1,4 +1,4 @@
-const { isLinesControlPass, RuleType } = require('./dist/index')
+const { RuleType, linesControl } = require('./dist/index')
 
 const checks = [{
   type: RuleType.total,
@@ -6,9 +6,4 @@ const checks = [{
   pattern: '!**/tests/*'
 }];
 
-if (isLinesControlPass(checks, { to: 'HEAD^1' })) {
-  console.log('All right!');
-} else {
-  console.log('This repo would like a smaller update');
-  process.exit(1);
-}
+linesControl(checks, { to: 'HEAD^1' });
