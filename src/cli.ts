@@ -2,7 +2,7 @@
 
 const { version } = require('../package.json');
 import commander, { Command } from 'commander';
-import isLinesControlPass, { RuleType, Rule } from './index';
+import isLinesControlPass, { RuleType, Rule, linesControl } from './index';
 
 const humanableCheckType = {
   [RuleType[RuleType.total]]: RuleType[RuleType.total],
@@ -67,13 +67,5 @@ const convertComparisonsFromArrToObj = (arr: string[]) => {
 
 const options = program.opts();
 const comparisons = convertComparisonsFromArrToObj(options.comparisons);
-const result = isLinesControlPass(options.rules, comparisons);
 
-if (result) {
-  console.log('All right!');
-} else {
-  console.log('This repo would like a smaller update');
-  if (!options.silent) {
-    process.exit(1);
-  }
-}
+linesControl(options.rules, comparisons);

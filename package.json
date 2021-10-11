@@ -1,6 +1,6 @@
 {
   "name": "lines-control",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "This tool should you control the scope of diff changes",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,6 +8,9 @@
   "repository": "git@github.com:AlekseyLeshko/lines-control.git",
   "author": "AlekseyLeshko <alekseyleshko@gmail.com>",
   "license": "MIT",
+  "files": [
+    "./dist/**/*"
+  ],
   "scripts": {
     "build": "yarn tsc",
     "example": "node example.js",

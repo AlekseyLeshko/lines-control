@@ -11,6 +11,27 @@ export const isLinesControlPass = (rules: Rule[] = [], comparisons?: Compare) =>
 
 export default isLinesControlPass;
 
+type Options = {
+  successfulText?: string,
+  failedText?: string,
+}
+
+export const linesControl = (rules: Rule[] = [], comparisons?: Compare, options?: Options) => {
+  const result = isLinesControlPass(rules, comparisons);
+  const {
+    successfulText = 'All right!',
+    failedText = 'This repo would like a smaller update.',
+  }= options || {};
+
+  if (result) {
+    console.log(successfulText);
+    return;
+  }
+
+  console.error(failedText);
+  process.exit(1);
+}
+
 type Compare = {
   from?: string;
   to: string;
