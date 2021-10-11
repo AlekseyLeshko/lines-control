@@ -2,9 +2,7 @@
 
 const { version } = require('../package.json');
 import commander, { Command } from 'commander';
-import { linesControl, RuleType, Rule } from './index';
-
-const program = new Command();
+import isLinesControlPass, { RuleType, Rule } from './index';
 
 const humanableCheckType = {
   [RuleType[RuleType.total]]: RuleType[RuleType.total],
@@ -39,6 +37,7 @@ const addComparisons = (value: string) => {
   return arr;
 }
 
+const program = new Command();
 program
   .option('-r, --rules <value...>', rulesDescription, addRule, [])
   .option('-c, --comparisons <value>', 'Comparison of commits and branches', addComparisons)
@@ -69,7 +68,7 @@ const convertComparisonsFromArrToObj = (arr: string[]) => {
 }
 
 const comparisons = convertComparisonsFromArrToObj(options.comparisons);
-const result = linesControl(options.rules, comparisons);
+const result = isLinesControlPass(options.rules, comparisons);
 
 if (result) {
   console.log('All right!');

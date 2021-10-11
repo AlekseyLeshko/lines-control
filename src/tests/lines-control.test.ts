@@ -1,6 +1,6 @@
 jest.mock('child_process')
 import { execSync } from 'child_process';
-import { linesControl, RuleType } from '../index'
+import isLinesControlPass, { RuleType } from '../index'
 
 describe('lines control', () => {
   beforeEach(() => {
@@ -138,7 +138,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Atc
-      const actual = linesControl(rules);
+      const actual = isLinesControlPass(rules);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);
@@ -198,7 +198,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Act
-      const actual = linesControl(rules, comparisons);
+      const actual = isLinesControlPass(rules, comparisons);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);
@@ -306,7 +306,7 @@ describe('lines control', () => {
       execSync.mockImplementation(() => gitOutput);
 
       // Act
-      const actual = linesControl(rules);
+      const actual = isLinesControlPass(rules);
 
       // Asserts
       expect(execSync).toHaveBeenCalledTimes(1);

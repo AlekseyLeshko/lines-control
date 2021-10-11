@@ -81,7 +81,7 @@ const getChanges = (comparisons?: Compare) => {
   return changes;
 }
 
-export const linesControl = (rules: Rule[] = [], comparisons?: Compare) => {
+export const isLinesControlPass = (rules: Rule[] = [], comparisons?: Compare) => {
   const changes = getChanges(comparisons);
   const result = rules
     .map(rule => ({ ...rule, result: getResult(rule, changes) }))
@@ -89,3 +89,5 @@ export const linesControl = (rules: Rule[] = [], comparisons?: Compare) => {
 
   return result
 }
+
+export default isLinesControlPass;
