@@ -2,7 +2,7 @@
 
 const { version } = require('../package.json');
 import commander, { Command } from 'commander';
-import { linesControl, RuleType, Check } from './index';
+import { linesControl, RuleType, Rule } from './index';
 
 const program = new Command();
 
@@ -24,7 +24,7 @@ const convertArgToRule = (stringArg: string) => {
   };
 };
 
-const addRule = (value: string, previous: Check[]) => {
+const addRule = (value: string, previous: Rule[]) => {
   const rule = convertArgToRule(value);
   return previous.concat([rule])
 }

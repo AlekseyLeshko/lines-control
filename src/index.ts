@@ -17,13 +17,13 @@ export enum RuleType {
   totalInsertions,
 }
 
-export type Check = {
+export type Rule = {
   type: RuleType,
   maxNumber: number,
   pattern?: string,
 }
 
-type CheckResult = Check & {
+type CheckResult = Rule & {
   result: boolean,
 }
 
@@ -32,13 +32,13 @@ const getTotalInsertions = (change: FileChange) => change.insertions;
 
 const getSum = (changes: FileChange[], adder: (arg0: FileChange) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
-const getAdder = (rule: Check) => {
+const getAdder = (rule: Rule) => {
   if (rule.type === RuleType.totalInsertions) return getTotalInsertions;
 
   return getTotal;
 }
 
-const getResult = (rule: Check, changes: FileChange[]) => {
+const getResult = (rule: Rule, changes: FileChange[]) => {
   const adder = getAdder(rule);
   const sum = getSum(changes, adder);
   return sum <= rule.maxNumber;
@@ -79,7 +79,7 @@ const getChanges = (comparisons?: Compare) => {
   return changes;
 }
 
-export const linesControl = (rules: Check[] = [], comparisons?: Compare) => {
+export const linesControl = (rules: Rule[] = [], comparisons?: Compare) => {
   const changes = getChanges(comparisons);
 
   const ruleResults = rules.map(rule => ({
