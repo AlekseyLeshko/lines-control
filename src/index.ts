@@ -39,8 +39,10 @@ const getAdder = (rule: Rule) => {
 }
 
 const getResult = (rule: Rule, changes: FileChange[]) => {
+  const flteredChanges = changes.filter(change => rule.pattern ? minimatch(change.path, rule.pattern) : true)
   const adder = getAdder(rule);
-  const sum = getSum(changes, adder);
+  const sum = getSum(flteredChanges, adder);
+
   return sum <= rule.maxNumber;
 }
 
@@ -81,11 +83,9 @@ const getChanges = (comparisons?: Compare) => {
 
 export const linesControl = (rules: Rule[] = [], comparisons?: Compare) => {
   const changes = getChanges(comparisons);
+  const result = rules
+    .map(rule => ({ ...rule, result: getResult(rule, changes) }))
+    .every(item => item.result);
 
-  const ruleResults = rules.map(rule => ({
-    ...rule,
-    result: getResult(rule, changes.filter(change => rule.pattern ? minimatch(change.path, rule.pattern) : true)),
-  }));
-
-  return Boolean(ruleResults.length) ? ruleResults.every(item => item.result) : true;
+  return result
 }
