@@ -119,8 +119,8 @@ jobs:
       - name: Run unit tests
         run: yarn test
 
-  diff-limit:
-    name: Diff limit
+  lines-control:
+    name: Lines control
     needs: setup
     runs-on: ubuntu-latest
 
@@ -156,5 +156,8 @@ jobs:
       - name: Build the project
         run: yarn tsc
 
-      - name: Check updates
+      - name: Lines control
+        run: yarn lines-control --rules total,30,!**/tests/* --comparisons HEAD^1
+
+      - name: Run example
         run: yarn example

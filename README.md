@@ -63,6 +63,8 @@ You can check how many lines have been touched each time you create a commit.
 You can create a CI step like
 ```
   lines-control:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Load current commit
         uses: actions/checkout@v2
