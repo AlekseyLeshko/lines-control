@@ -14,12 +14,27 @@ $ yarn add lines-control -D
 You can use this module in your terminal.
 ```
 $ lines-control --rules total,50
+```
+
+You can apply a rule for filtered files.
+It uses the [minimatch](https://github.com/isaacs/minimatch) library to do its matching.
+```
 $ lines-control --rules total,50,src/**/*
 $ lines-control --rules total,50,src/**/* totalInsertions,5,webpack/**/*
+```
+
+You can compare the two branches.
+```
 $ lines-control --rules total,50,src/**/* --comparisons origin/main
 $ lines-control --rules total,50,src/**/* --comparisons origin/main,/feature-x
 $ lines-control --rules total,50,src/**/* --comparisons origin/feature-x,origin/feature-y
-$ lines-control --rules total,50,src/**/* totalInsertions,5,webpack/**/* --comparisons origin/feature-x,origin/feature-y
+```
+
+and combine it
+```
+$ lines-control
+  --rules total,50,src/**/* totalInsertions,5,webpack/**/*
+  --comparisons origin/feature-x,origin/feature-y
 ```
 
 
