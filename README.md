@@ -13,13 +13,19 @@ $ yarn add lines-control -D
 ### Terminal example
 You can use this module in your terminal.
 ```
+$ lines-control --rules total,50
 $ lines-control --rules total,50,src/**/*
+$ lines-control --rules total,50,src/**/* totalInsertions,5,webpack/**/*
+$ lines-control --rules total,50,src/**/* --comparisons origin/main
+$ lines-control --rules total,50,src/**/* --comparisons origin/main,/feature-x
+$ lines-control --rules total,50,src/**/* --comparisons origin/feature-x,origin/feature-y
+$ lines-control --rules total,50,src/**/* totalInsertions,5,webpack/**/* --comparisons origin/feature-x,origin/feature-y
 ```
+
 
 ### [lint-staged](https://github.com/okonet/lint-staged) example
 You can check how many lines have been touched each time you create a commit.
 ```
-//
 {
   "lint-staged": {
     "*": "lines-control --rules total,50,src/**/*"
@@ -70,7 +76,7 @@ Options:
   -h, --help                 display help for command
 
   Example call:
-    $ lines-control --rules total,25 totalInsertions,5,src/**/* -w
+    $ lines-control --rules total,25 totalInsertions,5,src/**/*
     $ lines-control --rules total,25 --comparisons master,feature/test-branch-name
     $ lines-control --rules total,25 --comparisons main
 ```
