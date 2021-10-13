@@ -156,8 +156,5 @@ jobs:
       - name: Build the project
         run: yarn tsc
 
-      - name: Lines control
-        run: yarn lines-control --rules total,30,!**/tests/* --comparisons HEAD^1
-
       - name: Run example
         run: yarn example
