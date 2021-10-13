@@ -45,7 +45,7 @@ program
   .showSuggestionAfterError()
   program.addHelpText('after', `
   Example call:
-    $ lines-control --rules total,25 totalInsertions,5,src/**/* -w
+    $ lines-control --rules total,25 totalInsertions,5,src/**/*
     $ lines-control --rules total,25 --comparisons master,feature/test-branch-name
     $ lines-control --rules total,25 --comparisons main
   `);
