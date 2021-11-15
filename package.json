@@ -1,6 +1,6 @@
 {
   "name": "lines-control",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "This tool should you control the scope of diff changes",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
