@@ -119,7 +119,7 @@ describe('lines control', () => {
         },
       ],
       [
-        'total check when the file has insertion changes more to the total number of',
+        'total check when a file has insertion changes more to the total number of',
         {
           rules: [{
             type: RuleType.totalInsertions,
@@ -131,6 +131,29 @@ describe('lines control', () => {
             path: 'x',
           }],
           expected: false,
+        },
+      ],
+      [
+        'total check when a file was touched',
+        {
+          rules: [{
+            type: RuleType.total,
+            maxNumber: 10,
+          }],
+          changes: [{
+            insertions: '-',
+            deletions: '-',
+            path: 'x',
+          }, {
+            insertions: 2,
+            deletions: 2,
+            path: 'x/file-name.js',
+          }, {
+            insertions: 6,
+            deletions: 0,
+            path: 'x/index.js',
+          }],
+          expected: true,
         },
       ],
     ])('should return a status for %s', (_, { rules, total, changes, expected }) => {

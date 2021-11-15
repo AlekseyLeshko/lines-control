@@ -73,11 +73,14 @@ const getResult = (rule: Rule, changes: FileChange[]) => {
   return sum <= rule.maxNumber;
 }
 
+const isBinaryFile = (insertionStr: string) => insertionStr === '-';
+
 const parseGitOutput = (gitOutput: string) =>
   gitOutput
     .split('\n')
     .filter(line => line)
     .map((diffChage) => diffChage.split('\t'))
+    .filter(([a]) => !isBinaryFile(a))
     .map(([a, b, path]) => ({
       insertions: parseInt(a, 10),
       deletions: parseInt(b, 10),
