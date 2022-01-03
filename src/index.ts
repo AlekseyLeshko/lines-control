@@ -107,6 +107,5 @@ const getGitOutput = (comparisons?: Compare) => {
 const getChanges = (comparisons?: Compare) => {
   const gitOutput = getGitOutput(comparisons);
   const changes = parseGitOutput(gitOutput);
-
   return changes;
 }
