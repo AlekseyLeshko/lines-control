@@ -78,6 +78,6 @@ export function makeCliProgram() {
 
 const getDefaultBranch = () => {
   const cmd = '[ -f $(git rev-parse --show-toplevel)/.git/refs/heads/master ] && echo master || echo main';
-  const defaultBranch = execSync(cmd).toString();
+  const defaultBranch = execSync(cmd).toString().trim();
   return defaultBranch;
 }

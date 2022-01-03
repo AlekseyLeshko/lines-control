@@ -40,7 +40,7 @@ describe('lines control:cli', () => {
 
     const defaultBranch = 'master';
     const cmdToGetStat = `git diff ${defaultBranch} --numstat`;
-    cp.execSync.mockReturnValueOnce(defaultBranch);
+    cp.execSync.mockReturnValueOnce(`${defaultBranch}\n`);
 
     const gitOutput = generateGitOutput();
     cp.execSync.mockImplementation(() => gitOutput);
@@ -57,6 +57,7 @@ describe('lines control:cli', () => {
     expect(console.log).toHaveBeenCalledWith('All right!');
     expect(cp.execSync).toHaveBeenCalledTimes(2);
     expect(cp.execSync).toHaveBeenLastCalledWith(cmdToGetStat);
+    expect(cp.execSync.mock.calls[1][0].includes('\n')).toBeFalsy();
   });
 });
 
