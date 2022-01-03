@@ -154,7 +154,7 @@ jobs:
         run: yarn --frozen-lockfile --no-progress
 
       - name: Build the project
-        run: yarn tsc
+        run: yarn build
 
       - name: Run example
         run: yarn example
