@@ -29,7 +29,7 @@ describe('lines control:cli', () => {
     expect(console.error).toHaveBeenCalledTimes(0);
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith('All right!');
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
+    expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenLastCalledWith(cmdToGetStat);
   });
 
@@ -55,7 +55,7 @@ describe('lines control:cli', () => {
     expect(console.error).toHaveBeenCalledTimes(0);
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith('All right!');
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
+    expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenLastCalledWith(cmdToGetStat);
     expect(cp.execSync.mock.calls[1][0].includes('\n')).toBeFalsy();
   });
