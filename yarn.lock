@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@alekseyleshko/git-diff@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@alekseyleshko/git-diff/-/git-diff-0.2.0.tgz#6cea63cfd1a0100f5aa8bcead203d762b420ce5b"
+  integrity sha512-BoW4M8Jhp/v3Qqc7TXFCSf3I+WD2p+bjEV6I9NE8lOPzeQ3SdGZEo56YHg1HwJNmDIbiz4qBBbwy79tTRx8dRQ==
+
 "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.14.5", "@babel/code-frame@^7.15.8":
   version "7.15.8"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.15.8.tgz#45990c47adadb00c03677baa89221f7cc23d2503"

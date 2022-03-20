@@ -164,7 +164,7 @@ describe('lines control', () => {
       const actual = isLinesControlPass(rules);
 
       // Asserts
-      expect(execSync).toHaveBeenCalledTimes(1);
+      expect(execSync).toHaveBeenCalledTimes(2);
 
       expect(actual).toBe(expected);
     });
@@ -218,13 +218,14 @@ describe('lines control', () => {
         path: 'x',
       }];
       const gitOutput = generateGitOutput(changes);
-      execSync.mockImplementation(() => gitOutput);
+      execSync.mockReturnValueOnce('master');
+      execSync.mockReturnValueOnce(gitOutput);
 
       // Act
       const actual = isLinesControlPass(rules, comparisons);
 
       // Asserts
-      expect(execSync).toHaveBeenCalledTimes(1);
+      expect(execSync).toHaveBeenCalledTimes(2);
       expect(execSync).toHaveBeenCalledWith(expected);
 
       expect(actual).toBeTruthy();
@@ -332,7 +333,7 @@ describe('lines control', () => {
       const actual = isLinesControlPass(rules);
 
       // Asserts
-      expect(execSync).toHaveBeenCalledTimes(1);
+      expect(execSync).toHaveBeenCalledTimes(2);
 
       expect(actual).toBe(expected);
     });

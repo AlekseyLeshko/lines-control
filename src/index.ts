@@ -1,8 +1,14 @@
 import { execSync } from 'child_process';
 import minimatch from 'minimatch';
+import { getGitDiff, FileChange } from '@alekseyleshko/git-diff';
+
+type NotBinaryFileChange = Omit<FileChange, 'insertions' | 'deletions'> & {
+  insertions: number;
+  deletions: number;
+};
 
 export const isLinesControlPass = (rules: Rule[] = [], comparisons?: Compare) => {
-  const changes = getChanges(comparisons);
+  const changes = getGitDiff(comparisons).filter(isNotBinaryFile)
 
   return rules
     .map(rule => ({ ...rule, result: getResult(rule, changes) }))
@@ -48,16 +54,10 @@ export type Rule = {
   pattern?: string,
 }
 
-type FileChange = {
-  insertions: number,
-  deletions: number,
-  path: string,
-}
+const getTotal = (change: NotBinaryFileChange) => change.insertions + change.deletions;
+const getTotalInsertions = (change: NotBinaryFileChange) => change.insertions;
 
-const getTotal = (change: FileChange) => change.insertions + change.deletions;
-const getTotalInsertions = (change: FileChange) => change.insertions;
-
-const getSum = (changes: FileChange[], adder: (arg0: FileChange) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
+const getSum = (changes: NotBinaryFileChange[], adder: (arg0: NotBinaryFileChange) => number) => changes.reduce((acc, change) => acc += adder(change), 0)
 
 const getAdder = (rule: Rule) => {
   if (rule.type === RuleType.totalInsertions) return getTotalInsertions;
@@ -65,7 +65,7 @@ const getAdder = (rule: Rule) => {
   return getTotal;
 }
 
-const getResult = (rule: Rule, changes: FileChange[]) => {
+const getResult = (rule: Rule, changes: NotBinaryFileChange[]) => {
   const flteredChanges = changes.filter(change => rule.pattern ? minimatch(change.path, rule.pattern) : true)
   const adder = getAdder(rule);
   const sum = getSum(flteredChanges, adder);
@@ -73,39 +73,5 @@ const getResult = (rule: Rule, changes: FileChange[]) => {
   return sum <= rule.maxNumber;
 }
 
-const isBinaryFile = (insertionStr: string) => insertionStr === '-';
+const isNotBinaryFile = (change: FileChange | NotBinaryFileChange): change is NotBinaryFileChange => Number.isInteger(change.insertions) && Number.isInteger(change.deletions)
 
-const parseGitOutput = (gitOutput: string) =>
-  gitOutput
-    .split('\n')
-    .filter(line => line)
-    .map((diffChage) => diffChage.split('\t'))
-    .filter(([a]) => !isBinaryFile(a))
-    .map(([a, b, path]) => ({
-      insertions: parseInt(a, 10),
-      deletions: parseInt(b, 10),
-      path,
-    }));
-
-const getCommitRange = (comparisons?: Compare) => {
-  const defaultBranchName = 'master';
-  const { from, to = defaultBranchName } = comparisons || {};
-  if (from && to) {
-    return [from, to].join('...');
-  }
-
-  return to;
-}
-
-const getGitOutput = (comparisons?: Compare) => {
-  const commitRange = getCommitRange(comparisons);
-  const cmd = `git diff ${commitRange} --numstat`;
-  const gitOutput = execSync(cmd).toString();
-  return gitOutput;
-}
-
-const getChanges = (comparisons?: Compare) => {
-  const gitOutput = getGitOutput(comparisons);
-  const changes = parseGitOutput(gitOutput);
-  return changes;
-}
